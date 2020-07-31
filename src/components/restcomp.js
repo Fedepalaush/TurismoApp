@@ -28,7 +28,6 @@ export default function Restaurante(props) {
 
 
   const onpressStar = async () => {
-
     const arrayData = [];
     if (!estrella) {
       setColorEstrella('gold')

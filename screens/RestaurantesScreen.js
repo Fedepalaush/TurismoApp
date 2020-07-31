@@ -1,33 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View, Button, StyleSheet, Image, ScrollView, TextInput, FlatList, Body, Picker } from 'react-native';
-import bdp from '../src/components/images/bdp.jpg';
-import HardRock from '../src/components/images/HardRock.jpg';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icono from 'react-native-vector-icons/Feather';
 import Restaurante from '../src/components/restcomp.js'
 import { createStackNavigator } from '@react-navigation/stack';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { useNavigation } from '@react-navigation/native';
-import { Dropdown } from 'react-native-material-dropdown-v2';
-import ApolloClient from 'apollo-boost';
 import { gql } from 'apollo-boost'; // graphql-tag
-import { CheckBox } from 'native-base';
 import { Overlay } from 'react-native-elements';
-
-//const Stack = createStackNavigator();
- // return (
-
-  //  <Stack.Navigator>
-  //    <Stack.Screen name="GASTRONOMICOS" component={GraphqlProviderChild} />
-  //  </Stack.Navigator>
-
- // );
-//};
-
-
-
-
-
 
 const GASTRONOMICOS = gql`
    query myquery{
@@ -67,20 +45,15 @@ const ConseguirEspecialidades = (item) => {
   return esp
 }
 
-export default function RestauranteScreen () {
+export default function RestauranteScreen() {
   const navigation = useNavigation();
   const { loading, error, data } = useQuery(GASTRONOMICOS, {
 
     pollInterval: 5000,
   });
 
-  
-
-
   const _renderGastronomicos = ({ item }) => (
     <View key={item.id} style={styles.line}>
-
-     
       <Restaurante nombre={item.nombre} localidad={item.localidade?.nombre} foto={item.foto}
         lat={item.lat} lng={item.lng} domicilio={item.domicilio} id={item.id}
         actividad={ConseguirActividades(item)} especialidad={ConseguirEspecialidades(item)}
@@ -94,8 +67,6 @@ export default function RestauranteScreen () {
   const filtrosGastronomicos = (data) => {
 
     let { gastronomicos } = data;
-
-
     if (buscar !== '') {
       gastronomicos = gastronomicos.filter(i => i.nombre.toLowerCase().indexOf(buscar.toLowerCase()) >= 0);
     }
@@ -105,24 +76,16 @@ export default function RestauranteScreen () {
     }
 
     if (actividad !== null) {
-
       gastronomicos = gastronomicos.filter(i => i.actividades.some(checkNombreAct))
-
-
     }
 
     if (especialidad !== null) {
-
       gastronomicos = gastronomicos.filter(i => i.especialidades.some(checkNombreEsp))
-
     }
-
     return gastronomicos;
-
   }
 
   const ReiniciarFiltros = () => {
-
     setSelectedActividad('Actividad')
     setSelectedEspecialidad('Especialidad')
     setSelectedValue('Localidad')
@@ -173,8 +136,6 @@ export default function RestauranteScreen () {
     else if (selectedActividad === 'Bar - Pub')
       setactividad(21)
 
-
-
     if (selectedEspecialidad === 'Especialidad')
       setespecialidad(null)
     if (selectedEspecialidad === 'Cordero-Parrilla')
@@ -213,12 +174,7 @@ export default function RestauranteScreen () {
       setespecialidad(24)
     else if (selectedEspecialidad === 'Chocolaterias')
       setespecialidad(25)
-
   }
-
-
-
-
 
   const [buscar, onChangeBuscar] = useState('');
   const [localidad, setlocalidad] = useState(null);
@@ -290,8 +246,6 @@ export default function RestauranteScreen () {
 
   ];
 
-
-
   let dataEspecialidad = [{
     value: 'Especialidad',
   },
@@ -351,10 +305,10 @@ export default function RestauranteScreen () {
   const [over, setOver] = useState(false);
   return (
     <View style={styles.container}>
-      <View style={{ width:100}}>
-      <Button title='Filtros' color= '#FF8000'
-        onPress={() => setOver(true)} />
-        </View>
+      <View style={{ width: 100 }}>
+        <Button title='Filtros' color='#FF8000'
+          onPress={() => setOver(true)} />
+      </View>
       <Overlay isVisible={over} style={{ width: 90, height: 90 }}
         onBackdropPress={() => setOver(false)}>
         <TextInput placeholder="Ingrese el nombre del Restaurante" onChangeText={(value) => onChangeBuscar(value)} >
@@ -367,7 +321,6 @@ export default function RestauranteScreen () {
         >
           {dataLocalidad.map((localidad, idx) => <Picker.Item key={idx} value={localidad.value} label={localidad.value} />)}
         </Picker>
-
 
         <Picker
           selectedValue={selectedActividad}
@@ -385,23 +338,15 @@ export default function RestauranteScreen () {
           {dataEspecialidad.map((especialidad, idx) => <Picker.Item key={idx} value={especialidad.value} label={especialidad.value} />)}
         </Picker>
 
-
-        <Button title='Filtrar' onPress={() => { handleClick() }}/>
+        <Button title='Filtrar' onPress={() => { handleClick() }} />
         <Button title='Reiniciar' onPress={() => { ReiniciarFiltros() }} />
 
-      
-
-
       </Overlay>
-
-
-
-
 
       {loading ? (
         <Text>Cargando...</Text>
       ) : error ? (
-        <Text>ERROR</Text>
+        <Text>ERFROR</Text>
       ) : (
             <FlatList
               initialNumToRender={25}

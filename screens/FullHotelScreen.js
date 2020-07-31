@@ -6,9 +6,6 @@ import { Icon } from 'react-native-elements';
 
 export default function FullHotelScreen({ route }) {
   const { item } = route.params;
-  console.log(item)
-
-
   const myloop = [];
   let cont = 0;
   cont = item.categoria ? item.categoria["valor"] : null
@@ -18,7 +15,6 @@ export default function FullHotelScreen({ route }) {
       <View key={i}>
         <Icon
           name="star" color='gold'
-
         />
       </View>
     );
@@ -30,18 +26,14 @@ export default function FullHotelScreen({ route }) {
         source={{ uri: item.foto }} defaultSource={require('../src/components/images/noimage.jpg')}
         style={{ width: 430, height: 400 }}
       />
-
       <View style={styles.container} >
         <Text style={styles.titleText}>{item.nombre}</Text>
       </View>
-
       <View style={styles.container2}>
         <Text>{item.domicilio}</Text>
-
         <View style={{ marginTop: -70, flexDirection: 'row', marginLeft: 130, alignContent: 'center' }}>
           {myloop}
         </View>
-
       </View>
       <View style={styles.map}>
         <MapView
@@ -58,35 +50,25 @@ export default function FullHotelScreen({ route }) {
               latitude: item.lat,
               longitude: item.lng
             }}>
-
           </Marker>
-
         </MapView>
       </View>
     </View>
   )
 };
 
-
 const styles = StyleSheet.create({
-
-
-
   container: {
     flex: 1,
     alignItems: 'center',
   },
-
   container2: {
     marginTop: 90,
     marginLeft: 15
   },
-
   titleText: {
     fontSize: 20,
     fontWeight: "bold",
-
-
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -96,9 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 27,
     borderBottomColor: 'black'
-
   },
-
 });
 
 

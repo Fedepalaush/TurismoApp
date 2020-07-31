@@ -37,8 +37,6 @@ const RestService = () => {
     null,
   );
 
-
-
   const _renderAlojamiento = ({ item }) => (
     <View key={item.id} style={styles.line}>
  

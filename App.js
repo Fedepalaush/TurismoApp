@@ -10,7 +10,7 @@ import FotosFavScreen from './screens/FotosFavScreen.js';
 import MapScreen from './screens/ScreenMap.js';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
-import PromesaScreen from './screens/PromesaScreen.js';
+
 import FullHotelScreen from './screens/FullHotelScreen.js';
 import FullGastronomicoScreen from './screens/FullGastronomicoScreen.js';
 import FiltroScreen from './screens/FiltroScreen.js';
@@ -22,7 +22,7 @@ const AlojamientosStack = createStackNavigator();
 const RestaurantesStack = createStackNavigator();
 const FavoritosStack = createStackNavigator();
 const MapStack = createStackNavigator();
-const PromesaStack = createStackNavigator();
+
 const FiltroStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -114,8 +114,6 @@ const AlojamientosStackScreen =({navigation}) => (
           </FavoritosStack.Navigator>
       ); 
 
-
-
         const MapStackScreen =({navigation}) => (
 
           <MapStack.Navigator screenOptions={{
@@ -138,29 +136,8 @@ const AlojamientosStackScreen =({navigation}) => (
           ); 
 
 
-        const PromesaStackScreen =({navigation}) => (
-
-          <PromesaStack.Navigator screenOptions={{
-                 headerStyle: {
-                   backgroundColor: '#FF8000',
-                    },
-                 headerTintColor:'#fff',
-                 headerTitleStyle: {
-                  fontWeight: 'bold'
-                 }
-               }}>
-               <PromesaStack.Screen name="Promesa" component= {PromesaScreen} options={{
-                  headerLeft: () => (
-               <Icon.Button name = "ios-menu" size={25}
-                backgroundColor="#FF8000" onPress= {() => {navigation.
-                  openDrawer()}}></Icon.Button>
-             )
-            }}      />
-              </PromesaStack.Navigator>
-          ); 
-
-
-          
+        
+         
         const FiltroStackScreen =({navigation}) => (
 
           <FiltroStack.Navigator screenOptions={{
@@ -191,7 +168,7 @@ const AlojamientosStackScreen =({navigation}) => (
   
 
 const App = () => {
- // console.disableYellowBox = true;
+  console.disableYellowBox = true;
   return (
     
     
@@ -203,7 +180,6 @@ const App = () => {
         <Drawer.Screen name="Alojamientos" component={AlojamientosStackScreen} />
         <Drawer.Screen name="Restaurantes" component={RestaurantesStackScreen} />
         <Drawer.Screen name="Favoritos" component={FavoritosStackScreen} />
-        <Drawer.Screen name="Promesa" component={PromesaStackScreen} />
         <Drawer.Screen name="Mapa" component={MapStackScreen} />
         <Drawer.Screen name="Filtro" component={FiltroStackScreen} />
         <Drawer.Screen name="FotosFav" component={FotosFavScreen} />

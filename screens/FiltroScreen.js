@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, ListItem, CheckBox, Text, Body, View } from 'native-base';
-import {Picker} from '@react-native-community/picker';
-import  {Overlay} from 'react-native-elements';
 export default class FiltroScreen extends Component {
 
 

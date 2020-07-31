@@ -1,13 +1,11 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React, { Component } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import React from 'react'
 import { Image } from 'react-native-elements'
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 
 
 export default function FullGastronomicoScreen({ route }) {
   const { item } = route.params;
-  console.log(item)
-
   const renderEspecialidades =(item) => {
     return item.especialidad.map((item, index) => <Text key={index}>{item}, </Text>);
   }
@@ -17,7 +15,6 @@ export default function FullGastronomicoScreen({ route }) {
   }
 
   return (
-
     <View >
    {console.log(item)}
       <Image
@@ -69,20 +66,13 @@ export default function FullGastronomicoScreen({ route }) {
 
 const styles = StyleSheet.create({
 
-
-
   container: {
     flex: 1,
     alignItems: 'center',
   },
-
-
-
   titleText: {
     fontSize: 20,
     fontWeight: "bold",
-
-
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -92,7 +82,5 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 27,
     borderBottomColor: 'black'
-
   },
-
 });

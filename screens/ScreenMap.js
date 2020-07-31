@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Platform, Button, SafeAreaView, Text, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet,Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { PERMISSIONS, check, RESULTS, request } from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { gql } from 'apollo-boost'; // graphql-tag
 import axios from 'axios';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
-import { graphql } from 'graphql';
+import { useQuery, useLazyQuery } from '@apollo/react-hooks';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +23,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-  
+
   },
 });
 
@@ -78,14 +76,12 @@ export default function MapScreen() {
   const [currentPosition, setCurrentPosition] = useState(initialPosition);
   const [item, setItem] = useState(null);
   const navigation = useNavigation();
-  /* const [buscar, onChangeBuscar] = useState(''); */
-  const [datos, setDatos] = useState ([])
-  const [filtroActivo, setFiltroActivo] = useState (false)
-  
-
-  const graphqlGastro = useQuery(GASTRONOMICOS, {
-    pollInterval: 5000,
+  const [datos, setDatos] = useState([])
+  const [filtroActivo, setFiltroActivo] = useState(false)
+  const [fetchGastronomicos, { gastroLoading, gastroError, gastroData }] = useLazyQuery(GASTRONOMICOS, {
+    onCompleted: (d) => setGastronomicos(d.gastronomicos)
   });
+ 
 
   const ConseguirActividades = (item) => {
     const act = item.actividades.map((actividad) => actividad.actividade.nombre);
@@ -97,14 +93,14 @@ export default function MapScreen() {
   }
 
   const EsHotel = (item) => {
-    if (item.categoria){
+    if (item.categoria) {
       return true
     }
   }
 
   const filtrar = (word) => {
-    setFiltroActivo (true)
-    setGastronomicos(graphqlGastro.data.gastronomicos.filter(i => i.nombre.toLowerCase().includes(word.toLowerCase())))
+    setFiltroActivo(true)
+    setGastronomicos(gastronomicos.filter(i => i.nombre.toLowerCase().includes(word.toLowerCase())))
     setAlojamientos(alojamientos.filter(i => i.nombre.toLowerCase().includes(word.toLowerCase())))
   }
 
@@ -113,15 +109,12 @@ export default function MapScreen() {
     setAlojamientos(data);
   };
 
-
   useEffect(() => {
     setIsLoading(true);
-    
+
     fetchAlojamientos();
-    if (graphqlGastro.data) {
-      setGastronomicos(graphqlGastro.data.gastronomicos)
-    }
-    
+    fetchGastronomicos();
+
     Geolocation.getCurrentPosition(position => {
       const { longitude, latitude } = position.coords;
       setCurrentPosition({
@@ -139,68 +132,65 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
+      {isLoading && gastroLoading ? (
         <ActivityIndicator style={{ flex: 1 }} animating size="large" />
       ) : (<View style={styles.map}>
-        <View style={{marginTop:-20}}>
-        <TextInput 
-          placeholder="Ingrese el nombre a buscar" 
-          onChangeText={(value) => filtrar(value)}>
-        </TextInput>
-          </View>
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            showsUserLocation
-            initialRegion={currentPosition}
-            onPress={() => { setActiveMarker(false) }}
-          >
-            {alojamientos.map(item => (
-                EsHotel(item),
-              <Marker
-                coordinate={{
-                  latitude: item.lat,
-                  longitude: item.lng
-                }}
-                onPress={(event) => {
-                  event.stopPropagation()
-                  setActiveMarkerAlojamiento(true)
-                  setItem(item)
-                }}
-                icon="marker"
-              >
-                <View style={{ backgroundColor: '#40E9A4', padding: 5, borderRadius: 10, elevation: 3, shadowRadius: 2, shadowColor: 'black', shadowOffset: { width: 10, height: 10 } }}>
-                  <Icon name="hotel" size={20} color="white" />
-                </View>
-              </Marker>
-            )
-            )}
-            {gastronomicos && gastronomicos.map(item => (
-                item.actividad=ConseguirActividades(item),
-                item.especialidad= ConseguirEspecialidades(item),
-              <Marker
-                coordinate={{
-                  latitude: item.lat,
-                  longitude: item.lng
-                }}
-                onPress={(event) => {
-                  event.stopPropagation()
-                  setActiveMarkerGastro(true)
-                  setItem(item)
-                }}
-                icon="marker"
-              >
-                <View style={{ backgroundColor: '#40E9A4', padding: 5, borderRadius: 10, elevation: 3, shadowRadius: 2, shadowColor: 'black', shadowOffset: { width: 10, height: 10 } }}>
-                  <Icon name="food" size={20} color="white" />
-                </View>
-              </Marker>
-
-            )
-            )}
-
-
-          </MapView>
-          </View>
+        <View style={{ marginTop: -20 }}>
+          <TextInput
+            placeholder="Ingrese el nombre a buscar"
+            onChangeText={(value) => filtrar(value)}>
+          </TextInput>
+        </View>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          showsUserLocation
+          initialRegion={currentPosition}
+          onPress={() => { setActiveMarker(false) }}
+        >
+          {alojamientos.map(item => (
+          
+            <Marker
+              coordinate={{
+                latitude: item.lat,
+                longitude: item.lng
+              }}
+              onPress={(event) => {
+                event.stopPropagation()
+                setActiveMarkerAlojamiento(true)
+                setItem(item)
+              }}
+              icon="marker"
+            >
+              <View style={{ backgroundColor: '#40E9A4', padding: 5, borderRadius: 10, elevation: 3, shadowRadius: 2, shadowColor: 'black', shadowOffset: { width: 10, height: 10 } }}>
+                <Icon name="home" size={20} color="white" />
+              </View>
+            </Marker>
+          )
+          )}
+          {gastronomicos && gastronomicos.map(item => (
+            item.actividad = ConseguirActividades(item),
+            item.especialidad = ConseguirEspecialidades(item),
+            <Marker
+              coordinate={{
+                latitude: item.lat,
+                longitude: item.lng
+              }}
+              onPress={(event) => {
+                event.stopPropagation()
+                setActiveMarkerGastro(true)
+                setItem(item)
+              }}
+              icon="marker"
+            >
+              <View style={{ backgroundColor: '#40E9A4', padding: 5, borderRadius: 10, elevation: 3, shadowRadius: 2, shadowColor: 'black', shadowOffset: { width: 10, height: 10 } }}>
+                <Icon name="food" size={20} color="white" />
+              </View>
+            </Marker>
+          )
+          )}
+        </MapView>
+      </View>
         )}
 
       {activeMarkerAlojamiento ?
